@@ -2,12 +2,10 @@ package com.library.loans.presentationlayer;
 
 import com.library.loans.datalayer.LoanStatus;
 import com.library.loans.domainclientlayer.catalogs.BookModel;
-import com.library.loans.domainclientlayer.catalogs.Status;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 

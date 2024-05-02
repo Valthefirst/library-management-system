@@ -17,7 +17,7 @@ public interface LoanRequestMapper {
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "borrowedDate", ignore = true)
     @Mapping(target = "returnedDate", ignore = true)
-//    @Mapping(target = "books", source = "books")
+    @Mapping(target = "books", source = "bookModel")
     @Mapping(target = "dueDate", ignore = true)
 //    @Mapping(target = "loanId", source = "loanId")
 //    @Mapping(expression = "java(patronIdentifier)", target = "patronIdentifier")
