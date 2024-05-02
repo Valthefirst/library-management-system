@@ -1,6 +1,6 @@
 package com.library.catalog.presentationlayer.catalogbooks;
 
-import com.library.catalog.businesslayer.CatalogBooksService;
+import com.library.catalog.businesslayer.catalogbooks.CatalogBooksService;
 import com.library.catalog.datalayer.books.Author;
 import com.library.catalog.datalayer.books.Status;
 import com.library.catalog.presentationlayer.books.BookRequestModel;
@@ -12,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static com.library.catalog.datalayer.books.Status.DAMAGED;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = CatalogBooksController.class)
 class CatalogBooksControllerUnitTest {

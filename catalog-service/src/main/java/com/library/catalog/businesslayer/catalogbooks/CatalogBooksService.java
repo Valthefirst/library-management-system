@@ -1,4 +1,4 @@
-package com.library.catalog.businesslayer;
+package com.library.catalog.businesslayer.catalogbooks;
 
 import com.library.catalog.presentationlayer.books.BookRequestModel;
 import com.library.catalog.presentationlayer.books.BookResponseModel;
@@ -24,8 +24,6 @@ public interface CatalogBooksService {
     BookResponseModel addBookInCatalog(String catalogId, BookRequestModel bookRequestModel);
 
     BookResponseModel updateBookInCatalog(String catalogId, Long isbn, BookRequestModel bookRequestModel);
-
-    BookResponseModel patchBookInCatalog(String catalogId, Long isbn, BookRequestModel bookRequestModel);
 
     void deleteBookInCatalog(String catalogId, Long isbn);
 }

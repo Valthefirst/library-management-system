@@ -27,11 +27,11 @@ public class PatronLoansController {
         return ResponseEntity.ok().body(loanService.getLoanForPatron(patronId, loanId));
     }
 
-//    @PostMapping(consumes = "application/json", produces = "application/json")
-//    public ResponseEntity<LoanResponseModel> addLoanForPatron(@PathVariable String patronId, @RequestBody LoanRequestModel loanRequestModel) {
-//        return ResponseEntity.status(HttpStatus.CREATED).body(loanService.addLoanForPatron(patronId, loanRequestModel));
-//    }
-//
+    @PostMapping(consumes = "application/json", produces = "application/json")
+    public ResponseEntity<LoanResponseModel> addLoanForPatron(@PathVariable String patronId, @RequestBody LoanRequestModel loanRequestModel) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(loanService.addLoanForPatron(patronId, loanRequestModel));
+    }
+
 //    @PutMapping(consumes = "application/json", value = "{loanId}", produces = "application/json")
 //    public ResponseEntity<LoanResponseModel> updateLoanForPatron(@PathVariable String patronId, @RequestBody LoanRequestModel loanRequestModel,
 //                                                               @PathVariable String loanId) {

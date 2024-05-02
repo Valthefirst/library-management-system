@@ -32,14 +32,9 @@ public class PatronServiceClient {
 
     public PatronModel getPatronByPatronId(String patronId) {
         try {
-            log.debug("Getting the patron!");
             String url = PATRON_SERVICE_BASE_URL + "/" + patronId;
-            log.debug("Made the string");
 
-            PatronModel patronModel = restTemplate.getForObject(url, PatronModel.class);
-            log.debug("Sending the request!");
-
-            return patronModel;
+            return restTemplate.getForObject(url, PatronModel.class);
         }
         catch (HttpClientErrorException ex) {
             throw handleHttpClientException(ex);

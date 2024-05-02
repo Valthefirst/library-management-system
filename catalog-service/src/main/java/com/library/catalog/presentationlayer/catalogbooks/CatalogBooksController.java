@@ -1,6 +1,6 @@
 package com.library.catalog.presentationlayer.catalogbooks;
 
-import com.library.catalog.businesslayer.CatalogBooksService;
+import com.library.catalog.businesslayer.catalogbooks.CatalogBooksService;
 import com.library.catalog.presentationlayer.books.BookRequestModel;
 import com.library.catalog.presentationlayer.books.BookResponseModel;
 import com.library.catalog.presentationlayer.catalog.CatalogRequestModel;
@@ -73,11 +73,11 @@ public class CatalogBooksController {
         return ResponseEntity.ok().body(catalogBooksService.updateBookInCatalog(catalogId, isbn, bookRequestModel));
     }
 
-    @PatchMapping(consumes = "application/json", value = "{catalogId}/books/{isbn}", produces = "application/json")
-    public ResponseEntity<BookResponseModel> patchBook(@RequestBody BookRequestModel bookRequestModel,
-                                                       @PathVariable Long isbn, @PathVariable String catalogId) {
-        return ResponseEntity.ok().body(catalogBooksService.patchBookInCatalog(catalogId, isbn, bookRequestModel));
-    }
+//    @PatchMapping(consumes = "application/json", value = "{catalogId}/books/{isbn}", produces = "application/json")
+//    public ResponseEntity<BookResponseModel> patchBook(@RequestBody BookRequestModel bookRequestModel,
+//                                                       @PathVariable Long isbn, @PathVariable String catalogId) {
+//        return ResponseEntity.ok().body(catalogBooksService.patchBookInCatalog(catalogId, isbn, bookRequestModel));
+//    }
 
     @DeleteMapping("{catalogId}/books/{isbn}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long isbn, @PathVariable String catalogId) {

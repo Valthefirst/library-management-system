@@ -18,9 +18,5 @@ public class LoanRequestModel {
 
     private String fineId;
     private LoanStatus status;
-//    private LocalDate borrowedDate;
-    private LocalDate dueDate;
-//    private LocalDate returnedDate;
-//    private List<String> bookCatalogs;
     private List<Long> bookISBN;
 }
