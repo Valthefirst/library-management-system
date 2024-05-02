@@ -1,0 +1,62 @@
+# Default Spring Profile
+server:
+  error:
+    include-message: always
+
+logging:
+  level:
+    root: INFO
+    com.library: DEBUG
+
+---
+# for test
+
+spring:
+  config:
+    activate:
+      on-profile: test
+
+app:
+  catalog-service:
+    host: localhost
+    port: 7001
+
+  fines-service:
+    host: localhost
+    port: 7002
+
+  patrons-service:
+    host: localhost
+    port: 7003
+
+  loans-service:
+    host: localhost
+    port: 7004
+
+---
+
+# for docker
+
+spring:
+  config:
+    activate:
+      on-profile: docker
+
+server.port: 8080
+
+app:
+  catalog-service:
+    host: catalog-service
+    port: 8080
+
+  fines-service:
+    host: fines-service
+    port: 8080
+
+  patrons-service:
+    host: patrons-service
+    port: 8080
+
+  loans-service:
+    host: loans-service
+    port: 8080

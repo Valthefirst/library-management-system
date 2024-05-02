@@ -1,0 +1,193 @@
+services:
+  api-gateway:
+    build: api-gateway
+    hostname: api-gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - catalog-service
+      - fines-service
+      - patrons-service
+      - loans-service
+
+  catalog-service:
+    build: catalog-service
+    hostname: catalog-service
+    container_name: catalog-service
+#    ports:
+#      - "8081:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      mysql1:
+        condition: service_healthy
+
+  fines-service:
+    build: fines-service
+    hostname: fines-service
+    container_name: fines-service
+#    ports:
+#      - "8082:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      mysql2:
+        condition: service_healthy
+
+  patrons-service:
+    build: patrons-service
+    hostname: patrons-service
+    container_name: patrons-service
+#    ports:
+#      - "8083:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      postgresql1:
+        condition: service_healthy
+
+  loans-service:
+    build: loans-service
+    hostname: loans-service
+    ports:
+      - "8084:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - mongodb
+      - catalog-service
+      - fines-service
+      - patrons-service
+
+  mysql1:
+    image: mysql:5.7
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpwd
+      - MYSQL_DATABASE=catalog-db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pwd
+    volumes:
+      - ./data/mysql1:/var/lib/mysql1
+      - ./data/init.d:/docker-entrypoint-initdb.d
+    healthcheck:
+      test:
+        [
+            "CMD",
+            "mysqladmin",
+            "ping",
+            "-uuser",
+            "-ppwd",
+            "-h",
+            "localhost",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  mysql2:
+    image: mysql:5.7
+    ports:
+      - "3308:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpwd
+      - MYSQL_DATABASE=fines-db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pwd
+    volumes:
+      - ./data/mysql2:/var/lib/mysql2
+      - ./data/init.d:/docker-entrypoint-initdb.d
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "mysqladmin",
+          "ping",
+          "-uuser",
+          "-ppwd",
+          "-h",
+          "localhost",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  phpmyadmin1:
+    image: phpmyadmin:5.2.0
+    container_name: phpmyadmin1
+    links:
+      - mysql1
+    restart: always
+    ports:
+      - 5013:80
+    environment:
+      - PMA_ARBITRARY=1
+
+  phpmyadmin2:
+    image: phpmyadmin:5.2.0
+    container_name: phpmyadmin2
+    links:
+      - mysql2
+    restart: always
+    ports:
+      - 5014:80
+    environment:
+      - PMA_ARBITRARY=1
+
+  postgresql1:
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=patrons-db
+      - PGUSER=user
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=pwd
+    healthcheck:
+      test: "pg_isready -h postgresql1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  pgadmin1:
+    image: dpage/pgadmin4:latest
+    container_name: pgadmin1
+    restart: always
+    ports:
+      - "5050:80"
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@nneji.com
+      - PGADMIN_DEFAULT_PASSWORD=admin
+    depends_on:
+      - postgresql1
+
+  mongodb:
+    image: mongo
+    container_name: mongo_db
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo:/data
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=user
+      - MONGO_INITDB_ROOT_PASSWORD=pwd
+
+  mongo-express:
+    image: mongo-express:1.0.0-alpha.4
+    container_name: mongo_express
+    hostname: mongo_express
+    restart: always
+    ports:
+      - 8085:8081
+    environment:
+      - ME_CONFIG_MONGODB_URL=mongodb://admin:password@mongo_db:27017
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=user
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=pwd
+
+volumes:
+  mongo: {}

@@ -1,0 +1,5 @@
+include 'api-gateway'
+include 'catalog-service'
+include 'fines-service'
+include 'loans-service'
+include 'patrons-service'

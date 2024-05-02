@@ -1,0 +1,61 @@
+@startuml
+!includeurl https://raw.githubusercontent.com/RicardoNiepel/C4-PlantUML/master/C4_Container.puml
+
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+
+!include FONTAWESOME/users.puml
+
+AddElementTag("microService", $shape=EightSidedShape(), $bgColor="CornflowerBlue", $fontColor="white", $legendText="micro service\neight sided")
+AddElementTag("storage", $shape=RoundedBoxShape(), $bgColor="lightSkyBlue", $fontColor="white")
+AddRelTag(aggregate_root, $lineColor="red")
+
+LAYOUT_TOP_DOWN()
+'LAYOUT_WITH_LEGEND()
+SHOW_PERSON_OUTLINE()
+'HIDE_STEREOTYPE()
+
+title Container Diagram for Library System
+
+Person(employee, "Librarian", "An employee of the library who manages resources, assists patrons, and promotes literacy.")
+Person(patron, "Patron", "A person who borrows books from the library.")
+
+System_Boundary(library, "Library System") {
+    Container(webapp, "Web Application", "JavaScript, React", "Delivers the static content and the library single page application to the employee's browser.")
+    Container(singlePageApp, "Single-Page Application", "JavaScript, React", "Provides the library functionality to employees via their browser.")
+
+    Container(api_gateway, "API-Gateway", "Java, Spring Boot", "Provides library functionality via JSON/REST HTTPS API.")
+    Container(loans_service, "loans-service", "Java, Spring Boot", "Provides loans using the aggregator pattern via JSON/REST HTTPS API.", $tags = "microService")
+    Container(catalog_service, "catalog-service", "Java, Spring Boot", "Provides catalog functionality via JSON/REST HTTPS API.", $tags = "microService")
+    Container(fines_service, "fines-service", "Java, Spring Boot", "Provides fine functionality via JSON/REST HTTPS API.", $tags = "microService")
+    Container(patrons_service, "patrons-service", "Java, Spring Boot", "Provides patron functionality via JSON/REST HTTPS API.", $tags = "microService")
+
+    Container(loans_db, "Loans DB", "Mongo DB", "Stores loan information.", $tags = "storage")
+    Container(catalog_db, "Catalog DB", "MySQL 5.7", "Stores catalog information.", $tags = "storage")
+    Container(fines_db, "Fines DB", "MySQL 5.7", "Stores fine information.", $tags = "storage")
+    Container(patrons_db, "Patrons DB", "PostgresSQL", "Stores patron information.", $tags = "storage")
+
+    Rel(employee, webapp, "Visits mylibrary.com using", "HTTPS")
+    Rel_R(webapp, singlePageApp, "Delivers to the employee's browser")
+    Rel(employee, singlePageApp, "Views catalogs and tracks loans and fees using", "HTTPS")
+    Rel(patron, webapp, "Visits mylibrary.com using", "HTTPS")
+    Rel(patron, singlePageApp, "Views their loans and fees using", "HTTPS")
+
+    Rel(singlePageApp, api_gateway, "Makes API calls to", "JSON/REST/HTTPS")
+
+    Rel(api_gateway, patrons_service, "Makes API calls to", "JSON/REST/HTTPS")
+    Rel(api_gateway, fines_service, "Makes API calls to", "JSON/REST/HTTPS")
+    Rel(api_gateway, catalog_service, "Makes API calls to", "JSON/REST/HTTPS")
+    Rel(api_gateway, loans_service, "Makes API calls to", "JSON/REST/HTTPS")
+
+    Rel(loans_service, patrons_service, "Makes API calls to", "JSON/REST/HTTPS", $tags = "aggregate_root")
+    Rel(loans_service, fines_service, "Makes API calls to", "JSON/REST/HTTPS", $tags = "aggregate_root")
+    Rel(loans_service, catalog_service, "Makes API calls to", "JSON/REST/HTTPS", $tags = "aggregate_root")
+
+    Rel_D(patrons_service, patrons_db, "Reads from and writes to", "JDBC")
+    Rel_D(fines_service, fines_db, "Reads from and writes to", "JDBC")
+    Rel_D(catalog_service, catalog_db, "Reads from and writes to", "JDBC")
+    Rel_R(loans_service, loans_db, "Reads from and writes to", "Mongo")
+}
+
+@enduml

@@ -1,0 +1,216 @@
+@startuml
+hide circle
+top to bottom direction
+!define ENTITY(entityName) class entityName << Entity >>
+!define AGGREGATE(aggregateName) class aggregateName << Aggregate >>
+!define AGGREGATE_ENTITY(aggregateEntityName) class aggregateEntityName << Aggregate Entity >>
+!define AGGREGATE_ROOT(aggregateRootName) class aggregateRootName << Aggregate Root >>
+!define AGGREGATE_ROOT_ENTITY(aggregateRootEntityName) class aggregateRootEntityName << Aggregate Root >> << Entity >>
+!define VALUE_OBJECT(valueObjectName) class valueObjectName << Value Object >>
+!pragma useVerticalIf on
+skinparam dpi 350
+skinparam packageStyle rectangle
+skinparam rectangle {
+    BackgroundColor #f7f4eb
+    BorderColor Black
+}
+rectangle "Library" as BoundedContextLibrary #line.dashed {
+    Package "Patrons Accounts Sub-Domain" <<Rectangle>> #DFBDF4 {
+
+        AGGREGATE_ROOT_ENTITY(Patron) #Cyan{
+            firstName: String
+            lastName: String
+            contactMethodPreference: Enum
+        }
+
+        VALUE_OBJECT(PatronIdentifier) #Bisque{
+            patronId: UUID
+        }
+
+        VALUE_OBJECT(PatronAddress) #Bisque{
+            streetAddress: String
+            city: String
+            province: String
+            country: String
+            postalCode: String
+        }
+
+        VALUE_OBJECT(PatronPhoneNumber) #Bisque {
+            type: String
+            size: Integer
+            number: String
+        }
+
+        VALUE_OBJECT(Loans) #Bisque {
+            loans: list[LoanIdentifier]
+        }
+
+        Patron --> PatronIdentifier
+        Patron o-- "0..*" PatronPhoneNumber
+        Patron o-- "1" PatronAddress
+        Patron o-- "0..*" Loans
+    }
+
+    Package "Catalog Sub-Domain" <<Rectangle>> #DFBDF4 {
+
+        AGGREGATE_ROOT_ENTITY(Catalog) #Cyan {
+            type: String
+            size: Integer
+        }
+
+       VALUE_OBJECT(CatalogIdentifier) #Bisque{
+            catalogId: UUID
+       }
+        ENTITY(Book) #lightblue{
+            title: String
+            collection: String
+            edition: String
+            publisher: String
+            synopsis: String
+            language: String
+            status: Enum
+            }
+
+        VALUE_OBJECT(ISBN) #Bisque{
+            isbn: Integer
+        }
+
+        VALUE_OBJECT(Author) #Bisque{
+            firstName: String
+            lastName: String
+        }
+
+        Book --> ISBN
+        Book o-- "1..*" Author
+        Catalog --> CatalogIdentifier
+        Catalog *-- "0..*" ISBN
+    }
+
+    Package "Fines Sub-Domain" <<Rectangle>> #DFBDF4 {
+        ENTITY(Fine) #lightblue {
+            amount: BigDecimal
+            status: Enum
+            reason: String
+            isPaid: Boolean
+            }
+
+        VALUE_OBJECT(FineIdentifier) #Bisque{
+            fineId: UUID
+        }
+
+        Fine --> FineIdentifier
+'        Fine --> PatronIdentifier
+    }
+
+    Package "Loans Sub-Domain" <<Rectangle>> #DFBDF4 {
+
+       note "Invariant: [When a book is borrowed i.e. loan.status is set to status.ACTIVE, the book's status in the catalogue must be set to BORROWED]" as catalogueInvariant1
+
+        AGGREGATE_ENTITY(Loan) #Cyan {
+            status: Enum
+            loanDate: LocalDate
+            dueDate: LocalDate
+            books: List[ISBN]
+            }
+
+        VALUE_OBJECT(LoanIdentifier) #Bisque{
+            loanIdentifier: UUID
+        }
+
+        Loan --> LoanIdentifier
+        Loan -u-> PatronIdentifier
+        Loan o-- "1..*" ISBN
+        Loan --> FineIdentifier
+        LoanIdentifier "0..*" --* Loans
+    }
+
+Package "Human Resources Sub-Domain" <<Rectangle>> {
+        ENTITY(Employee) #lightblue{
+            firstName: String
+            lastName: String
+            email: String
+            salary: Decimal
+            commissionRate: Decimal
+        }
+        VALUE_OBJECT(EmployeeIdentifier) #Bisque{
+            salesPersonId: UUID
+        }
+        VALUE_OBJECT(EmployeeAddress) #Bisque{
+                street: String
+                city: String
+                province: String
+                country: String
+        }
+        VALUE_OBJECT(EmployeePhoneNumber) #Bisque {
+            type: String
+            number: String
+        }
+
+        ENTITY(Department) #lightblue {
+            departmentName: String
+            headCount: Integer
+        }
+
+        VALUE_OBJECT(DepartmentIdentifier) #Bisque {
+            departmentCode: UUID
+        }
+
+        VALUE_OBJECT(Position) #Bisque {
+            title: String
+            positionCode: String
+        }
+
+
+
+        Employee --> EmployeeIdentifier
+
+        Employee o-- Position
+        Employee "1" o-- "1..*" EmployeePhoneNumber
+        Employee o-- "1" EmployeeAddress
+        Employee "1" o--> "1" DepartmentIdentifier
+        Department --> DepartmentIdentifier
+        Department "1" o-- "1..*" Position
+    }
+
+    Package "Branches Sub-Domain" <<Rectangle>> {
+        AGGREGATE_ROOT(Branch) #Cyan {
+            name: String
+            }
+
+        VALUE_OBJECT(BranchIdentifier) #Bisque{
+            branchId: UUID
+        }
+
+        VALUE_OBJECT(BranchAddress) #Bisque{
+            streetAddress: String
+            city: String
+            province: String
+            country: String
+            postalCode: String
+        }
+
+        Branch --> BranchIdentifier
+        Branch o-- "1" BranchAddress
+        Branch --> CatalogIdentifier
+        Branch --> "1..*" EmployeeIdentifier
+
+    }
+
+    Package "Reservations Sub-Domain" <<Rectangle>> {
+        ENTITY(Reservation) #lightblue {
+            name: String
+            }
+
+        VALUE_OBJECT(ReservationIdentifier) #Bisque{
+            reservationId: UUID
+        }
+
+        Reservation --> ReservationIdentifier
+        ReservationIdentifier "0..*" --> Book
+
+    }
+
+}
+
+
+@enduml
