@@ -79,11 +79,11 @@ public class CatalogBooksServiceImpl implements CatalogBooksService {
                 .putBookByCatalogIdAndIsbn(catalogId, isbn, bookRequestModel));
     }
 
-    @Override
-    public BookResponseModel patchBookInCatalog(String catalogId, Long isbn, BookRequestModel bookRequestModel) {
-        return bookResponseMapper.responseModelToResponseModel(catalogServiceClient
-                .patchBookByCatalogIdAndIsbn(catalogId, isbn, bookRequestModel));
-    }
+//    @Override
+//    public BookResponseModel patchBookInCatalog(String catalogId, Long isbn, BookRequestModel bookRequestModel) {
+//        return bookResponseMapper.responseModelToResponseModel(catalogServiceClient
+//                .patchBookByCatalogIdAndIsbn(catalogId, isbn, bookRequestModel));
+//    }
 
     @Override
     public void deleteBookInCatalog(String catalogId, Long isbn) {

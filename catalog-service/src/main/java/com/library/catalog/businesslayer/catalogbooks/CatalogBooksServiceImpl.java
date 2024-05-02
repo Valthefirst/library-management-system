@@ -1,4 +1,4 @@
-package com.library.catalog.businesslayer;
+package com.library.catalog.businesslayer.catalogbooks;
 
 import com.library.catalog.datalayer.books.Book;
 import com.library.catalog.datalayer.books.BookRepository;
@@ -166,25 +166,25 @@ public class CatalogBooksServiceImpl implements CatalogBooksService {
         return bookResponseMapper.entityToResponseModel(response);
     }
 
-    @Override
-    public BookResponseModel patchBookInCatalog(String catalogId, Long isbn, BookRequestModel bookRequestModel) {
-        if (catalogRepository.findByCatalogIdentifier_CatalogId(catalogId) == null)
-            throw new NotFoundException("Unknown catalogId provided: " + catalogId);
-
-        if (isbn.toString().length() != 10 && isbn.toString().length() != 13) {
-            throw new InvalidISBNException("ISBN must be 10 or 13 digits long.");
-        }
-
-        Book existingBook = bookRepository.findByIsbn_Isbn(isbn);
-        if (existingBook == null) {
-            throw new NotFoundException("Unknown ISBN provided: " + isbn);
-        }
-
-        existingBook.setStatus(Status.valueOf(bookRequestModel.getStatus()));
-
-        Book response = bookRepository.save(existingBook);
-        return bookResponseMapper.entityToResponseModel(response);
-    }
+//    @Override
+//    public BookResponseModel patchBookInCatalog(String catalogId, Long isbn, BookRequestModel bookRequestModel) {
+//        if (catalogRepository.findByCatalogIdentifier_CatalogId(catalogId) == null)
+//            throw new NotFoundException("Unknown catalogId provided: " + catalogId);
+//
+//        if (isbn.toString().length() != 10 && isbn.toString().length() != 13) {
+//            throw new InvalidISBNException("ISBN must be 10 or 13 digits long.");
+//        }
+//
+//        Book existingBook = bookRepository.findByIsbn_Isbn(isbn);
+//        if (existingBook == null) {
+//            throw new NotFoundException("Unknown ISBN provided: " + isbn);
+//        }
+//
+//        existingBook.setStatus(Status.valueOf(bookRequestModel.getStatus()));
+//
+//        Book response = bookRepository.save(existingBook);
+//        return bookResponseMapper.entityToResponseModel(response);
+//    }
 
     @Override
     public void deleteBookInCatalog(String catalogId, Long isbn) {

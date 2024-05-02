@@ -27,16 +27,40 @@ public class CatalogServiceClient {
         this.restTemplate = restTemplate;
         this.mapper = mapper;
 
-        BOOK_SERVICE_BASE_URL  = "http://" + catalogServiceHost + ":" + catalogServicePort + "/api/v1/catalogs";
+//        BOOK_SERVICE_BASE_URL  = "http://" + catalogServiceHost + ":" + catalogServicePort + "/api/v1/catalogs";
+
+        BOOK_SERVICE_BASE_URL  = "http://" + catalogServiceHost + ":" + catalogServicePort + "/api/v1/books";
     }
 
-    public BookModel getBookByCatalogIdAndIsbn(String catalogId, String isbn) {
+//    public BookModel getBookByCatalogIdAndIsbn(String catalogId, String isbn) {
+//        try {
+//            String url = BOOK_SERVICE_BASE_URL + "/" + catalogId + "/books/" + isbn;
+//
+//            BookModel bookModel = restTemplate.getForObject(url, BookModel.class);
+//
+//            return bookModel;
+//        }
+//        catch (HttpClientErrorException ex) {
+//            throw handleHttpClientException(ex);
+//        }
+//    }
+
+    public BookModel getBookByIsbn(Long isbn) {
         try {
-            String url = BOOK_SERVICE_BASE_URL + "/" + catalogId + "/books/" + isbn;
+            String url = BOOK_SERVICE_BASE_URL + "/" + isbn;
 
-            BookModel bookModel = restTemplate.getForObject(url, BookModel.class);
+            return restTemplate.getForObject(url, BookModel.class);
+        }
+        catch (HttpClientErrorException ex) {
+            throw handleHttpClientException(ex);
+        }
+    }
 
-            return bookModel;
+    public BookModel patchBookByIsbn(Long isbn, BookModel bookModel) {
+        try {
+            String url = BOOK_SERVICE_BASE_URL + "/" + isbn;
+
+            return restTemplate.patchForObject(url, bookModel, BookModel.class);
         }
         catch (HttpClientErrorException ex) {
             throw handleHttpClientException(ex);

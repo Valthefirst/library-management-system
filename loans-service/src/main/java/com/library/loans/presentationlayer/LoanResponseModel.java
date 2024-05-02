@@ -26,9 +26,4 @@ public class LoanResponseModel {
     private LocalDate dueDate;
     private LocalDate returnedDate;
     private List<BookModel> books;
-//    String catalogId;
-//    String title;
-//    String collection;
-//    Status status;
-//    private String title;
 }

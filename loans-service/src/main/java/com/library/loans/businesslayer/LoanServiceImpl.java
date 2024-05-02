@@ -1,6 +1,7 @@
 package com.library.loans.businesslayer;
 
 import com.library.loans.datalayer.Loan;
+import com.library.loans.datalayer.LoanIdentifier;
 import com.library.loans.datalayer.LoanRepository;
 import com.library.loans.datamapperlayer.LoanRequestMapper;
 import com.library.loans.datamapperlayer.LoanResponseMapper;
@@ -8,6 +9,7 @@ import com.library.loans.domainclientlayer.catalogs.BookModel;
 import com.library.loans.domainclientlayer.catalogs.CatalogServiceClient;
 import com.library.loans.domainclientlayer.catalogs.Status;
 import com.library.loans.domainclientlayer.fines.FineServiceClient;
+import com.library.loans.domainclientlayer.patrons.PatronModel;
 import com.library.loans.domainclientlayer.patrons.PatronServiceClient;
 import com.library.loans.presentationlayer.LoanRequestModel;
 import com.library.loans.presentationlayer.LoanResponseModel;
@@ -18,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -66,41 +69,43 @@ public class LoanServiceImpl implements LoanService{
                 loanRepository.findLoanByLoanIdentifier_LoanId(loanId));
     }
 
-//    @Override
-//    public LoanResponseModel addLoanForPatron(String patronId, LoanRequestModel loanRequestModel) {
-//        if (patronServiceClient.getPatronByPatronId(patronId) == null) {
-//            throw new NotFoundException("Invalid patronId: " + patronId);
-//        }
-////        String catalogId;
-//
-//        loanRequestModel.getBookISBN().forEach(isbn -> {
-//            String catalogId = catalogServiceClient.getBookByCatalogIdAndIsbn();
-//            String catalog = book.getCatalog();
-//            BookModel bookObject = catalogServiceClient.getBookByCatalogIdAndIsbn(catalog, isbn);
-//
-//            if (bookObject == null) {
-//                throw new NotFoundException("Invalid ISBN: " + isbn);
-//            }
-//
-//            switch (bookObject.getStatus()) {
-//                case BORROWED:
-//                    throw new UnavailableBookException("Book with ISBN: " + isbn + " is already borrowed");
-//                case LOST:
-//                    throw new UnavailableBookException("Book with ISBN: " + isbn + " is lost");
-//                case DAMAGED:
-//                    throw new UnavailableBookException("Book with ISBN: " + isbn + " is damaged");
-//            }
-//
-//            bookObject.setStatus(Status.BORROWED);
-//        });
-//
-//        Loan loan = loanRequestMapper.requestModelToEntity(loanRequestModel,
-//                new LoanIdentifier(),
-//                new PatronIdentifier(patronId), null);
-//        loan.setBorrowedDate(LocalDate.now());
-//        loan.setDueDate(LocalDate.now().plusDays(21));
-//        return loanResponseMapper.entityToResponseModel(loanRepository.save(loan));
-//    }
+    @Override
+    public LoanResponseModel addLoanForPatron(String patronId, LoanRequestModel loanRequestModel) {
+        if (patronServiceClient.getPatronByPatronId(patronId) == null) {
+            throw new NotFoundException("Invalid patronId: " + patronId);
+        }
+        List<BookModel> bookModelList = new ArrayList<>();
+
+        loanRequestModel.getBookISBN().forEach(isbn -> {
+            BookModel bookObject = catalogServiceClient.getBookByIsbn(isbn);
+
+            if (bookObject == null) {
+                throw new NotFoundException("Invalid ISBN: " + isbn);
+            }
+
+            switch (bookObject.getStatus()) {
+                case BORROWED:
+                    throw new UnavailableBookException("Book with ISBN: " + isbn + " is already borrowed");
+                case LOST:
+                    throw new UnavailableBookException("Book with ISBN: " + isbn + " is lost");
+                case DAMAGED:
+                    throw new UnavailableBookException("Book with ISBN: " + isbn + " is damaged");
+            }
+            bookObject.setStatus(Status.BORROWED);
+            catalogServiceClient.patchBookByIsbn(isbn, BookModel.builder().status(Status.BORROWED).build());
+            bookModelList.add(bookObject);
+        });
+
+        Loan loan = loanRequestMapper.requestModelToEntity(loanRequestModel,
+                new LoanIdentifier(),
+                new PatronModel(patronId, patronServiceClient.getPatronByPatronId(patronId).getFirstName(),
+                        patronServiceClient.getPatronByPatronId(patronId).getLastName()),
+                null,
+                 bookModelList);
+        loan.setBorrowedDate(LocalDate.now());
+        loan.setDueDate(LocalDate.now().plusDays(21));
+        return loanResponseMapper.entityToResponseModel(loanRepository.save(loan));
+    }
 
 //    @Override
 //    public LoanResponseModel updateLoanForPatron(String patronId, LoanRequestModel loanRequestModel, String loanId) {

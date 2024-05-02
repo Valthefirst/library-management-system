@@ -35,9 +35,7 @@ public class FineServiceClient {
         try {
             String url = FINE_SERVICE_BASE_URL + "/" + fineId;
 
-            FineModel fineModel = restTemplate.getForObject(url, FineModel.class);
-
-            return fineModel;
+            return restTemplate.getForObject(url, FineModel.class);
         }
         catch (HttpClientErrorException ex) {
             throw handleHttpClientException(ex);

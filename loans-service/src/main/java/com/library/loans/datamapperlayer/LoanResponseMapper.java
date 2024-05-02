@@ -20,8 +20,6 @@ public interface LoanResponseMapper {
 //    @Mapping(expression = "java(loan.getBookModel())", target = "books")
     @Mapping(expression = "java(loan.getFineModel() != null ? loan.getFineModel().getFineId() : null)",
             target = "fineId")
-//    @Mapping(expression = "java(patronRepository.findByPatronIdentifier_PatronId(loan.getPatronIdentifier().getPatronId()).getFirstName())", target = "patronFirstName")
-//    @Mapping(expression = "java(patronRepository.findByPatronIdentifier_PatronId(loan.getPatronIdentifier().getPatronId()).getLastName())", target = "patronLastName")
     LoanResponseModel entityToResponseModel(Loan loan);
 
     List<LoanResponseModel> entityListToResponseModelList(List<Loan> books);

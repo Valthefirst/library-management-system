@@ -138,16 +138,16 @@ public class CatalogServiceClient {
         }
     }
 
-    public BookResponseModel patchBookByCatalogIdAndIsbn(String catalogId, Long isbn, BookRequestModel bookRequestModel) {
-        try {
-            String url = BOOK_SERVICE_BASE_URL + "/" + catalogId + "/books/" + isbn;
-
-            return restTemplate.patchForObject(url, bookRequestModel, BookResponseModel.class);
-        }
-        catch (HttpClientErrorException ex) {
-            throw handleHttpClientException(ex);
-        }
-    }
+//    public BookResponseModel patchBookByCatalogIdAndIsbn(String catalogId, Long isbn, BookRequestModel bookRequestModel) {
+//        try {
+//            String url = BOOK_SERVICE_BASE_URL + "/" + catalogId + "/books/" + isbn;
+//
+//            return restTemplate.patchForObject(url, bookRequestModel, BookResponseModel.class);
+//        }
+//        catch (HttpClientErrorException ex) {
+//            throw handleHttpClientException(ex);
+//        }
+//    }
 
     public void deleteBookByCatalogIdAndIsbn(String catalogId, Long isbn) {
         try {
