@@ -2,7 +2,6 @@ package com.library.loans.domainclientlayer.patrons;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.library.loans.utils.HttpErrorInfo;
-import com.library.loans.utils.exceptions.InvalidAmountException;
 import com.library.loans.utils.exceptions.InvalidEmailException;
 import com.library.loans.utils.exceptions.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
