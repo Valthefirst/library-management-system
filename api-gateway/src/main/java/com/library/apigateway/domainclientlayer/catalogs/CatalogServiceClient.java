@@ -6,6 +6,9 @@ import com.library.apigateway.presentationlayer.catalogs.books.BookResponseModel
 import com.library.apigateway.presentationlayer.catalogs.catalog.CatalogRequestModel;
 import com.library.apigateway.presentationlayer.catalogs.catalog.CatalogResponseModel;
 import com.library.apigateway.utils.HttpErrorInfo;
+import com.library.apigateway.utils.exceptions.DuplicateISBNException;
+import com.library.apigateway.utils.exceptions.InUseException;
+import com.library.apigateway.utils.exceptions.InvalidISBNException;
 import com.library.apigateway.utils.exceptions.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 @Component
 @Slf4j
@@ -165,6 +169,15 @@ public class CatalogServiceClient {
         //include all possible responses from the client
         if (ex.getStatusCode() == NOT_FOUND) {
             return new NotFoundException(getErrorMessage(ex));
+        }
+        if (ex.getStatusCode() == UNPROCESSABLE_ENTITY) {
+            return new InvalidISBNException(getErrorMessage(ex));
+        }
+        if (ex.getStatusCode() == UNPROCESSABLE_ENTITY) {
+            return new InUseException(getErrorMessage(ex));
+        }
+        if (ex.getStatusCode() == UNPROCESSABLE_ENTITY) {
+            return new DuplicateISBNException(getErrorMessage(ex));
         }
         log.warn("Got an unexpected HTTP error: {}, will rethrow it", ex.getStatusCode());
         log.warn("Error body: {}", ex.getResponseBodyAsString());

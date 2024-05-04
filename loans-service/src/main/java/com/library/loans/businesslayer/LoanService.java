@@ -11,8 +11,8 @@ public interface LoanService {
     LoanResponseModel getLoanForPatron(String patronId, String loanId);
 
     LoanResponseModel addLoanForPatron(String patronId, LoanRequestModel loanRequestModel);
-//
-//    LoanResponseModel updateLoanForPatron(String patronId, LoanRequestModel loanRequestModel, String loanId);
+
+    LoanResponseModel updateLoanForPatron(String patronId, LoanRequestModel loanRequestModel, String loanId);
 
     void deleteLoanForPatron(String patronId, String loanId);
 }

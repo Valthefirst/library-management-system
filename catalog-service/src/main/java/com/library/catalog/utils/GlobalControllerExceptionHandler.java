@@ -24,7 +24,7 @@ public class GlobalControllerExceptionHandler {
 
     @ResponseStatus(UNPROCESSABLE_ENTITY)
     @ExceptionHandler(InvalidISBNException.class)
-    public HttpErrorInfo handleInvalidInputException(WebRequest request, Exception ex) {
+    public HttpErrorInfo handleInvalidISBNException(WebRequest request, Exception ex) {
         return createHttpErrorInfo(UNPROCESSABLE_ENTITY, request, ex);
     }
 

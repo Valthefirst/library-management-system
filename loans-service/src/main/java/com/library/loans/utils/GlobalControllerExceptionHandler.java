@@ -1,7 +1,6 @@
 package com.library.loans.utils;
 
-import com.library.loans.utils.exceptions.NotFoundException;
-import com.library.loans.utils.exceptions.UnavailableBookException;
+import com.library.loans.utils.exceptions.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -26,6 +25,36 @@ public class GlobalControllerExceptionHandler {
     @ResponseStatus(UNPROCESSABLE_ENTITY)
     @ExceptionHandler(UnavailableBookException.class)
     public HttpErrorInfo handleUnavailableBookException(WebRequest request, Exception ex) {
+        return createHttpErrorInfo(UNPROCESSABLE_ENTITY, request, ex);
+    }
+
+    @ResponseStatus(UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(InvalidAmountException.class)
+    public HttpErrorInfo handleInvalidAmountException(WebRequest request, Exception ex) {
+        return createHttpErrorInfo(UNPROCESSABLE_ENTITY, request, ex);
+    }
+
+    @ResponseStatus(UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(InvalidISBNException.class)
+    public HttpErrorInfo handleInvalidISBNException(WebRequest request, Exception ex) {
+        return createHttpErrorInfo(UNPROCESSABLE_ENTITY, request, ex);
+    }
+
+    @ResponseStatus(UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(InUseException.class)
+    public HttpErrorInfo handleInUseException(WebRequest request, Exception ex) {
+        return createHttpErrorInfo(UNPROCESSABLE_ENTITY, request, ex);
+    }
+
+    @ResponseStatus(UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(DuplicateISBNException.class)
+    public HttpErrorInfo handleDuplicateISBNException(WebRequest request, Exception ex) {
+        return createHttpErrorInfo(UNPROCESSABLE_ENTITY, request, ex);
+    }
+
+    @ResponseStatus(UNPROCESSABLE_ENTITY)
+    @ExceptionHandler(InvalidEmailException.class)
+    public HttpErrorInfo handleInvalidEmailException(WebRequest request, Exception ex) {
         return createHttpErrorInfo(UNPROCESSABLE_ENTITY, request, ex);
     }
 

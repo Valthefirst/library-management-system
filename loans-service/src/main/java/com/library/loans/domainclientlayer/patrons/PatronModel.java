@@ -11,7 +11,6 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Data
 @Builder
-@AllArgsConstructor
 public class PatronModel {
 
     String patronId;

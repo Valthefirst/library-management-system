@@ -6,8 +6,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -16,7 +14,6 @@ import java.util.List;
 @Builder
 public class LoanRequestModel {
 
-    private String fineId;
     private LoanStatus status;
     private List<Long> bookISBN;
 }

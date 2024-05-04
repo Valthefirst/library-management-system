@@ -42,8 +42,8 @@ public class FineServiceImpl implements FineService{
 
     @Override
     public FineResponseModel addFine(FineRequestModel fineRequestModel) {
-        if (fineRequestModel.getAmount().compareTo(new BigDecimal("0.01")) < 0)
-            throw new InvalidAmountException("The fine must have a value");
+        if (fineRequestModel.getAmount().compareTo(new BigDecimal("0.00")) < 0)
+            throw new InvalidAmountException("The fine must have a positive value");
 
         Fine fine = fineRequestMapper.requestModelToEntity(fineRequestModel, new FineIdentifier());
         return fineResponseMapper.entityToResponseModel(fineRepository.save(fine));
@@ -54,8 +54,8 @@ public class FineServiceImpl implements FineService{
         Fine existingFine = fineRepository.findByFineIdentifier_FineId(fineId);
         if (existingFine == null)
             throw new NotFoundException("Unknown fineId: " + fineId);
-        if (fineRequestModel.getAmount().compareTo(new BigDecimal("0.01")) < 0)
-            throw new InvalidAmountException("The fine must have a value");
+        if (fineRequestModel.getAmount().compareTo(new BigDecimal("0.00")) < 0)
+            throw new InvalidAmountException("The fine must have a positive value");
         Fine updatedFine = fineRequestMapper.requestModelToEntity(fineRequestModel, existingFine.getFineIdentifier());
         updatedFine.setId(existingFine.getId());
         return fineResponseMapper.entityToResponseModel(fineRepository.save(updatedFine));

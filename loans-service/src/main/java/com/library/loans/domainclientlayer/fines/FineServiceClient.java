@@ -2,6 +2,7 @@ package com.library.loans.domainclientlayer.fines;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.library.loans.utils.HttpErrorInfo;
+import com.library.loans.utils.exceptions.InvalidAmountException;
 import com.library.loans.utils.exceptions.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -42,11 +43,36 @@ public class FineServiceClient {
         }
     }
 
+    public FineModel postFine(FineModel fineModel) {
+        try {
+            return restTemplate.postForObject(FINE_SERVICE_BASE_URL, fineModel, FineModel.class);
+        }
+        catch (HttpClientErrorException ex) {
+            throw handleHttpClientException(ex);
+        }
+    }
+
+    public FineModel putFine(FineModel fineModel, String fineId) {
+        try {
+            String url = FINE_SERVICE_BASE_URL + "/" + fineId;
+
+            restTemplate.put(url, fineModel, FineModel.class);
+
+            return getFineByFineId(fineId);
+        }
+        catch (HttpClientErrorException ex) {
+            throw handleHttpClientException(ex);
+        }
+    }
+
     public RuntimeException handleHttpClientException(HttpClientErrorException ex) {
 
         //include all possible responses from the client
         if (ex.getStatusCode() == NOT_FOUND) {
             return new NotFoundException(getErrorMessage(ex));
+        }
+        if (ex.getStatusCode() == UNPROCESSABLE_ENTITY) {
+            return new InvalidAmountException(getErrorMessage(ex));
         }
         log.warn("Got an unexpected HTTP error: {}, will rethrow it", ex.getStatusCode());
         log.warn("Error body: {}", ex.getResponseBodyAsString());

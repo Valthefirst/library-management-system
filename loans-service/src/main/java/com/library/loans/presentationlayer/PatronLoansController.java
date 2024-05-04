@@ -32,11 +32,11 @@ public class PatronLoansController {
         return ResponseEntity.status(HttpStatus.CREATED).body(loanService.addLoanForPatron(patronId, loanRequestModel));
     }
 
-//    @PutMapping(consumes = "application/json", value = "{loanId}", produces = "application/json")
-//    public ResponseEntity<LoanResponseModel> updateLoanForPatron(@PathVariable String patronId, @RequestBody LoanRequestModel loanRequestModel,
-//                                                               @PathVariable String loanId) {
-//        return ResponseEntity.ok().body(loanService.updateLoanForPatron(patronId, loanRequestModel, loanId));
-//    }
+    @PutMapping(consumes = "application/json", value = "{loanId}", produces = "application/json")
+    public ResponseEntity<LoanResponseModel> updateLoanForPatron(@PathVariable String patronId, @RequestBody LoanRequestModel loanRequestModel,
+                                                               @PathVariable String loanId) {
+        return ResponseEntity.ok().body(loanService.updateLoanForPatron(patronId, loanRequestModel, loanId));
+    }
 
     @DeleteMapping("{loanId}")
     public ResponseEntity<Void> deleteLoanForPatron(@PathVariable String patronId, @PathVariable String loanId) {

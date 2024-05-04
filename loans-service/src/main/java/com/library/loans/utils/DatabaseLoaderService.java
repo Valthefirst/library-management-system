@@ -2,6 +2,7 @@ package com.library.loans.utils;
 
 import com.library.loans.datalayer.*;
 import com.library.loans.datalayer.LoanRepository;
+import com.library.loans.domainclientlayer.catalogs.Author;
 import com.library.loans.domainclientlayer.catalogs.BookModel;
 import com.library.loans.domainclientlayer.catalogs.Status;
 import com.library.loans.domainclientlayer.fines.FineModel;
@@ -33,6 +34,10 @@ public class DatabaseLoaderService implements CommandLineRunner {
                 .title("The Great Gatsby")
                 .collection("F. Scott Fitzgerald")
                 .status(Status.AVAILABLE)
+                .author(Author.builder()
+                        .firstName("Robert")
+                        .lastName("Martin")
+                        .build())
                 .build();
 
         var bookModel2 = BookModel.builder()
@@ -41,6 +46,10 @@ public class DatabaseLoaderService implements CommandLineRunner {
                 .title("Clean Code: A Handbook of Agile Software Craftsmanship")
                 .collection("Software Development")
                 .status(Status.AVAILABLE)
+                .author(Author.builder()
+                        .firstName("Robert")
+                        .lastName("Martin")
+                        .build())
                 .build();
 
         List<BookModel> bookModelList = new ArrayList<>();
@@ -55,7 +64,7 @@ public class DatabaseLoaderService implements CommandLineRunner {
 
         var fineModel = FineModel.builder()
                 .fineId("ef23ab6e-d614-47b9-95d0-d66167ae5080")
-                .amount(new BigDecimal(0.50))
+                .amount(new BigDecimal("0.50"))
                 .reason("Late return")
                 .isPaid(true)
                 .build();

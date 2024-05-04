@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.library.apigateway.presentationlayer.patrons.PatronRequestModel;
 import com.library.apigateway.presentationlayer.patrons.PatronResponseModel;
 import com.library.apigateway.utils.HttpErrorInfo;
+import com.library.apigateway.utils.exceptions.InvalidEmailException;
 import com.library.apigateway.utils.exceptions.NotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,6 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
 @Component
 @Slf4j
@@ -94,6 +96,9 @@ public class PatronServiceClient {
         //include all possible responses from the client
         if (ex.getStatusCode() == NOT_FOUND) {
             return new NotFoundException(getErrorMessage(ex));
+        }
+        if (ex.getStatusCode() == UNPROCESSABLE_ENTITY) {
+            return new InvalidEmailException(getErrorMessage(ex));
         }
         log.warn("Got an unexpected HTTP error: {}, will rethrow it", ex.getStatusCode());
         log.warn("Error body: {}", ex.getResponseBodyAsString());
