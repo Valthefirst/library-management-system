@@ -3,7 +3,6 @@ package com.library.catalog.businesslayer.catalogbooks;
 import com.library.catalog.datalayer.books.Book;
 import com.library.catalog.datalayer.books.BookRepository;
 import com.library.catalog.datalayer.books.ISBN;
-import com.library.catalog.datalayer.books.Status;
 import com.library.catalog.datalayer.catalog.Catalog;
 import com.library.catalog.datalayer.catalog.CatalogIdentifier;
 import com.library.catalog.datalayer.catalog.CatalogRepository;
@@ -113,6 +112,12 @@ public class CatalogBooksServiceImpl implements CatalogBooksService {
         if (book == null) {
             throw new NotFoundException("Unknown ISBN provided: " + isbn);
         }
+
+        book = bookRepository.findByCatalogIdentifier_CatalogIdAndIsbn_Isbn(catalogId, isbn);
+        if (book == null) {
+            throw new NotFoundException("Book is not in the catalog");
+        }
+
         return bookResponseMapper.entityToResponseModel(book);
     }
 
@@ -158,6 +163,11 @@ public class CatalogBooksServiceImpl implements CatalogBooksService {
             throw new NotFoundException("Unknown ISBN provided: " + isbn);
         }
 
+        existingBook = bookRepository.findByCatalogIdentifier_CatalogIdAndIsbn_Isbn(catalogId, isbn);
+        if (existingBook == null) {
+            throw new NotFoundException("Book is not in the catalog");
+        }
+
         Book updatedBook = bookRequestMapper.requestModelToEntity(bookRequestModel, existingBook.getIsbn(),
                 existingBook.getCatalogIdentifier());
         updatedBook.setId(existingBook.getId());
@@ -165,26 +175,6 @@ public class CatalogBooksServiceImpl implements CatalogBooksService {
         Book response = bookRepository.save(updatedBook);
         return bookResponseMapper.entityToResponseModel(response);
     }
-
-//    @Override
-//    public BookResponseModel patchBookInCatalog(String catalogId, Long isbn, BookRequestModel bookRequestModel) {
-//        if (catalogRepository.findByCatalogIdentifier_CatalogId(catalogId) == null)
-//            throw new NotFoundException("Unknown catalogId provided: " + catalogId);
-//
-//        if (isbn.toString().length() != 10 && isbn.toString().length() != 13) {
-//            throw new InvalidISBNException("ISBN must be 10 or 13 digits long.");
-//        }
-//
-//        Book existingBook = bookRepository.findByIsbn_Isbn(isbn);
-//        if (existingBook == null) {
-//            throw new NotFoundException("Unknown ISBN provided: " + isbn);
-//        }
-//
-//        existingBook.setStatus(Status.valueOf(bookRequestModel.getStatus()));
-//
-//        Book response = bookRepository.save(existingBook);
-//        return bookResponseMapper.entityToResponseModel(response);
-//    }
 
     @Override
     public void deleteBookInCatalog(String catalogId, Long isbn) {
@@ -196,9 +186,13 @@ public class CatalogBooksServiceImpl implements CatalogBooksService {
         }
 
         Book existingBook = bookRepository.findByIsbn_Isbn(isbn);
-
         if (existingBook == null) {
             throw new NotFoundException("Unknown ISBN provided: " + isbn);
+        }
+
+        existingBook = bookRepository.findByCatalogIdentifier_CatalogIdAndIsbn_Isbn(catalogId, isbn);
+        if (existingBook == null) {
+            throw new NotFoundException("Book is not in the catalog");
         }
 
         // To decrement the number of books in the catalogue
