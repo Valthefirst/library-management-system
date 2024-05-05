@@ -4,7 +4,6 @@ import com.library.apigateway.domainclientlayer.loans.LoanServiceClient;
 import com.library.apigateway.mapperlayer.loans.LoanResponseMapper;
 import com.library.apigateway.presentationlayer.loans.LoanRequestModel;
 import com.library.apigateway.presentationlayer.loans.LoanResponseModel;
-import com.library.apigateway.utils.exceptions.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

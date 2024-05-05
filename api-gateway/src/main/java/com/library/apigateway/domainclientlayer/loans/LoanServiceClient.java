@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.library.apigateway.presentationlayer.loans.LoanRequestModel;
 import com.library.apigateway.presentationlayer.loans.LoanResponseModel;
 import com.library.apigateway.utils.HttpErrorInfo;
-import com.library.apigateway.utils.exceptions.InvalidAmountException;
 import com.library.apigateway.utils.exceptions.NotFoundException;
 import com.library.apigateway.utils.exceptions.UnavailableBookException;
 import lombok.extern.slf4j.Slf4j;
