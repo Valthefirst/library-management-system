@@ -1,7 +1,6 @@
 package com.library.fines.presentationlayer;
 
 import com.library.fines.businesslayer.FineService;
-import com.library.fines.datalayer.FineRepository;
 import com.library.fines.utils.exceptions.InvalidAmountException;
 import com.library.fines.utils.exceptions.NotFoundException;
 import org.junit.jupiter.api.Test;
@@ -49,29 +48,12 @@ class FineControllerUnitTest {
                 .build();
     }
 
-    private FineRequestModel buildFineRequestModel(String firstName) {
-        return FineRequestModel.builder()
-                .amount(new BigDecimal("0.75"))
-                .reason("Overdue books")
-                .isPaid(false)
-                .build();
-    }
-
     private FineResponseModel buildFineResponseModel() {
         return FineResponseModel.builder()
                 .fineId(FOUND_FINE_ID)
                 .amount(FOUND_FINE_AMOUNT)
                 .reason(FOUND_FINE_REASON)
                 .isPaid(FOUND_FINE_ISPAID)
-                .build();
-    }
-
-    private FineResponseModel buildFineResponseModel(String firstName) {
-        return FineResponseModel.builder()
-                .fineId(FOUND_FINE_ID)
-                .amount(new BigDecimal("0.75"))
-                .reason("Overdue books")
-                .isPaid(false)
                 .build();
     }
 

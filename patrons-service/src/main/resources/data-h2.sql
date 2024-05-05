@@ -1,5 +1,5 @@
 insert into patrons(patron_id, first_name, last_name, email_address, contact_method_preference, street_address, city, province, country, postal_code)
-values('e5913a79-9b1e-4516-9ffd-06578e7af261', 'Vilma', 'Chawner', 'vchawner0@phoca.cz', 'MAIL', '8452 Anhalt Park', 'Chambly', 'Québec', 'Canada', 'J3L 5Y6');
+values('e5913a79-9b1e-4516-9ffd-06578e7af261', 'Vilma', 'Chawner', 'vchawner0@phoca.cz', 'MAIL', '8452 Anhalt Park', 'Chambly', 'Quebec', 'Canada', 'J3L 5Y6');
 insert into patrons (patron_id, first_name, last_name, email_address, contact_method_preference, street_address, city, province, country, postal_code)
 values ('c3540a89-cb47-4c96-888e-ff96708db4d8', 'Alick', 'Ucceli', 'aucceli0@dot.gov', 'EMAIL', '73 Shoshone Road', 'Barraute', 'Québec', 'Canada', 'P0M 2T6');
 insert into patrons (patron_id, first_name, last_name, email_address, contact_method_preference, street_address, city, province, country, postal_code)

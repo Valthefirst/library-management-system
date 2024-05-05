@@ -23,7 +23,7 @@ class PatronRepositoryIntegrationTest {
 
     // positive test case
     @Test
-    public void whenFineExists_ReturnFineByFineId() {
+    public void whenPatronExists_ReturnPatronByPatronId() {
         // arrange
         var homePhone = new PhoneNumber(PhoneType.HOME, "514-555-5555");
         List<PhoneNumber> phoneNumbers = new ArrayList<>();
@@ -50,7 +50,7 @@ class PatronRepositoryIntegrationTest {
 
     // negative test case
     @Test
-    public void whenFineDoesNotExist_ReturnNull() {
+    public void whenPatronDoesNotExist_ReturnNull() {
         // arrange
         var homePhone = new PhoneNumber(PhoneType.HOME, "514-555-5555");
         List<PhoneNumber> phoneNumbers = new ArrayList<>();
