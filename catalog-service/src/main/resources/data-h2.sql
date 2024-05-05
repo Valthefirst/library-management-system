@@ -9,6 +9,10 @@ insert into books(isbn, catalog_id, title, collection, edition, publisher, synop
 values(9789390183524, 'd846a5a7-2e1c-4c79-809c-4f3f471e826d', 'The Great Gatsby', 'F. Scott Fitzgerald', '', 'Scribner',
        'The Great Gatsby is a novel written by American author F. Scott Fitzgerald that follows a cast of characters living in the fictional towns of West Egg and East Egg on prosperous Long Island in the summer of 1922. The story primarily concerns the young and mysterious millionaire Jay Gatsby and his quixotic passion and obsession with the beautiful former debutante Daisy Buchanan.',
        'English', 'DAMAGED', 'F. Scott', 'Fitzgerald');
+insert into books(isbn, catalog_id, title, collection, edition, publisher, synopsis, language, status, first_name, last_name)
+values(1234567890, 'd846a5a7-2e1c-4c79-809c-4f3f471e826d', 'The Great Gatsby', 'F. Scott Fitzgerald', '', 'Scribner',
+       'The Great Gatsby is a novel written by American author F. Scott Fitzgerald that follows a cast of characters living in the fictional towns of West Egg and East Egg on prosperous Long Island in the summer of 1922. The story primarily concerns the young and mysterious millionaire Jay Gatsby and his quixotic passion and obsession with the beautiful former debutante Daisy Buchanan.',
+       'English', 'DAMAGED', 'F. Scott', 'Fitzgerald');
 INSERT INTO books (isbn, catalog_id, title, collection, edition, publisher, synopsis, language, status, first_name, last_name)
 VALUES (9780132350884, 'd846a5a7-2e1c-4c79-809c-4f3f471e826d', 'Clean Code: A Handbook of Agile Software Craftsmanship', 'Software Development', '1st', 'Prentice Hall',
         'Clean Code is divided into three parts. The first describes the principles, patterns, and practices of writing clean code. The second part consists of several case studies of increasing complexity. Each case study is an exercise in cleaning up code—of transforming a code base that has some problems into one that is sound and efficient. The third part is the payoff: a single chapter containing a list of heuristics and “smells” gathered while creating the case studies.',

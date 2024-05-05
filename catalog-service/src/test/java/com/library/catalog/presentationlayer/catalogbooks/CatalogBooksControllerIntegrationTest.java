@@ -33,10 +33,12 @@ class CatalogBooksControllerIntegrationTest {
 
     private final String BASE_URI_CATALOG = "api/v1/catalogs";
     private final String FOUND_CATALOG_ID = "d846a5a7-2e1c-4c79-809c-4f3f471e826d";
+    private final String OTHER_CATALOG_ID = "e125b033-591e-464d-91de-beaf360c3d48";
     private final String FOUND_CATALOG_TYPE = "Adult";
     private final int FOUND_CATALOG_SIZE = 4;
     private final String NOT_FOUND_CATALOG_ID = "ef23ab6e-d614-47b9-95d0-d66167ae5082";
-    private final Long FOUND_BOOK_ISBN = 9789390183524L;
+    private final Long FOUND_BOOK_ISBN13 = 9789390183524L;
+    private final Long FOUND_BOOK_ISBN10 = 1234567890L;
     private final String FOUND_BOOK_TITLE = "The Great Gatsby";
     private final String FOUND_BOOK_COLLECTION = "F. Scott Fitzgerald";
     private final String FOUND_BOOK_EDITION = "";
@@ -44,7 +46,8 @@ class CatalogBooksControllerIntegrationTest {
     private final String FOUND_BOOK_SYNOPSIS = "The Great Gatsby is a novel written by American author F. Scott " +
             "Fitzgerald that follows a cast of characters living in the fictional towns of West Egg and East Egg on " +
             "prosperous Long Island in the summer of 1922. The story primarily concerns the young and mysterious " +
-            "millionaire Jay Gatsby and his quixotic passion and obsession with the beautiful former debutante Daisy Buchanan.";
+            "millionaire Jay Gatsby and his quixotic passion and obsession with the beautiful former debutante " +
+            "Daisy Buchanan.";
     private final String FOUND_BOOK_LANGUAGE = "English";
     private final Status FOUND_BOOK_STATUS = DAMAGED;
     private final String FOUND_BOOK_AUTHOR_FNAME = "F. Scott";
@@ -265,7 +268,7 @@ class CatalogBooksControllerIntegrationTest {
                 .expectStatus().is4xxClientError()
                 .expectBody()
                 .jsonPath("$.httpStatus").isEqualTo("UNPROCESSABLE_ENTITY")
-                .jsonPath("$.message").isEqualTo("Catalog has books and cannot be deleted");
+                .jsonPath("$.message").isEqualTo("Catalog has books and cannot be deleted.");
     }
 
     //                                                          BOOKS
@@ -332,11 +335,11 @@ class CatalogBooksControllerIntegrationTest {
 
     // positive test case
     @Test
-    public void whenGetBookExists_thenReturnBookByISBN() {
+    public void whenGetBookExists_thenReturnBookByISBN13() {
 
         // act & assert
         webTestClient.get()
-                .uri(BASE_URI_CATALOG + "/" + FOUND_CATALOG_ID + "/books/" + FOUND_BOOK_ISBN)
+                .uri(BASE_URI_CATALOG + "/" + FOUND_CATALOG_ID + "/books/" + FOUND_BOOK_ISBN13)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isOk()
@@ -344,7 +347,35 @@ class CatalogBooksControllerIntegrationTest {
                 .expectBody(BookResponseModel.class)
                 .value((book) -> {
                     assertNotNull(book);
-                    assertEquals(book.getIsbn(), FOUND_BOOK_ISBN);
+                    assertEquals(book.getIsbn(), FOUND_BOOK_ISBN13);
+                    assertEquals(book.getCatalogId(), FOUND_CATALOG_ID);
+                    assertEquals(book.getTitle(), FOUND_BOOK_TITLE);
+                    assertEquals(book.getCollection(), FOUND_BOOK_COLLECTION);
+                    assertEquals(book.getEdition(), FOUND_BOOK_EDITION);
+                    assertEquals(book.getPublisher(), FOUND_BOOK_PUBLISHER);
+                    assertEquals(book.getSynopsis(), FOUND_BOOK_SYNOPSIS);
+                    assertEquals(book.getLanguage(), FOUND_BOOK_LANGUAGE);
+                    assertEquals(book.getStatus(), FOUND_BOOK_STATUS);
+                    assertEquals(book.getAuthor().getFirstName(), FOUND_BOOK_AUTHOR_FNAME);
+                    assertEquals(book.getAuthor().getLastName(), FOUND_BOOK_AUTHOR_LNAME);
+                });
+    }
+
+    // positive test case
+    @Test
+    public void whenGetBookExists_thenReturnBookByISBN10() {
+
+        // act & assert
+        webTestClient.get()
+                .uri(BASE_URI_CATALOG + "/" + FOUND_CATALOG_ID + "/books/" + FOUND_BOOK_ISBN10)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody(BookResponseModel.class)
+                .value((book) -> {
+                    assertNotNull(book);
+                    assertEquals(book.getIsbn(), FOUND_BOOK_ISBN10);
                     assertEquals(book.getCatalogId(), FOUND_CATALOG_ID);
                     assertEquals(book.getTitle(), FOUND_BOOK_TITLE);
                     assertEquals(book.getCollection(), FOUND_BOOK_COLLECTION);
@@ -364,7 +395,7 @@ class CatalogBooksControllerIntegrationTest {
 
         // act & assert
         webTestClient.get()
-                .uri(BASE_URI_CATALOG + "/" + NOT_FOUND_CATALOG_ID + "/books/" + FOUND_BOOK_ISBN)
+                .uri(BASE_URI_CATALOG + "/" + NOT_FOUND_CATALOG_ID + "/books/" + FOUND_BOOK_ISBN13)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .expectStatus().isNotFound()
@@ -372,6 +403,21 @@ class CatalogBooksControllerIntegrationTest {
                 .jsonPath("$.httpStatus").isEqualTo("NOT_FOUND")
                 .jsonPath("$.message").isEqualTo("Unknown catalogId provided: "
                         + NOT_FOUND_CATALOG_ID);
+    }
+
+    // negative test case
+    @Test
+    public void whenGetBookFromDifferentCatalog_thenThrowException() {
+
+        // act & assert
+        webTestClient.get()
+                .uri(BASE_URI_CATALOG + "/" + OTHER_CATALOG_ID + "/books/" + FOUND_BOOK_ISBN13)
+                .accept(MediaType.APPLICATION_JSON)
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody()
+                .jsonPath("$.httpStatus").isEqualTo("NOT_FOUND")
+                .jsonPath("$.message").isEqualTo("Book is not in the catalog.");
     }
 
     // negative test case
@@ -407,11 +453,47 @@ class CatalogBooksControllerIntegrationTest {
 
     // positive test case
     @Test
-    public void whenValidBook_thenCreateBook() {
+    public void whenValidBook_thenCreateBook13() {
 
         // arrange
         long sizeDB = bookRepository.count();
         BookRequestModel bookRequestModel = new BookRequestModel(1234567890123L, "New Book",
+                "New Collection", "1st edition", "Neji Publications",
+                "Val Chase's magnum opus", "English", "AVAILABLE", new Author("Val", "Chase"));
+
+        webTestClient.post()
+                .uri(BASE_URI_CATALOG + "/" + FOUND_CATALOG_ID + "/books")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .bodyValue(bookRequestModel)
+                .exchange()
+                .expectStatus().isCreated()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody(BookResponseModel.class)
+                .value((bookResponseModel) -> {
+                    assertNotNull(bookResponseModel);
+                    assertEquals(bookRequestModel.getTitle(), bookResponseModel.getTitle());
+                    assertEquals(bookRequestModel.getCollection(), bookResponseModel.getCollection());
+                    assertEquals(bookRequestModel.getEdition(), bookResponseModel.getEdition());
+                    assertEquals(bookRequestModel.getPublisher(), bookResponseModel.getPublisher());
+                    assertEquals(bookRequestModel.getSynopsis(), bookResponseModel.getSynopsis());
+                    assertEquals(bookRequestModel.getLanguage(), bookResponseModel.getLanguage());
+                    assertEquals(bookRequestModel.getStatus(), bookResponseModel.getStatus().toString());
+                    assertEquals(bookRequestModel.getAuthor().getFirstName(), bookResponseModel.getAuthor().getFirstName());
+                    assertEquals(bookRequestModel.getAuthor().getLastName(), bookResponseModel.getAuthor().getLastName());
+                });
+
+        // assert
+        assertEquals(sizeDB + 1, bookRepository.count());
+    }
+
+    // positive test case
+    @Test
+    public void whenValidBook_thenCreateBook10() {
+
+        // arrange
+        long sizeDB = bookRepository.count();
+        BookRequestModel bookRequestModel = new BookRequestModel(1234567891L, "New Book",
                 "New Collection", "1st edition", "Neji Publications",
                 "Val Chase's magnum opus", "English", "AVAILABLE", new Author("Val", "Chase"));
 
@@ -498,7 +580,7 @@ class CatalogBooksControllerIntegrationTest {
 
         // arrange
         long sizeDB = bookRepository.count();
-        BookRequestModel bookRequestModel = new BookRequestModel(FOUND_BOOK_ISBN, "New Book",
+        BookRequestModel bookRequestModel = new BookRequestModel(FOUND_BOOK_ISBN13, "New Book",
                 "New Collection", "1st edition", "Neji Publications",
                 "Val Chase's magnum opus", "English", "AVAILABLE", new Author("Val", "Chase"));
 
@@ -520,7 +602,7 @@ class CatalogBooksControllerIntegrationTest {
                 .expectBody()
                 .jsonPath("$.httpStatus").isEqualTo("UNPROCESSABLE_ENTITY")
                 .jsonPath("$.message").isEqualTo("The catalog already contains a book with isbn: "
-                        + FOUND_BOOK_ISBN);
+                        + FOUND_BOOK_ISBN13);
 
         // assert
         assertEquals(sizeDB, bookRepository.count());
@@ -528,7 +610,7 @@ class CatalogBooksControllerIntegrationTest {
 
     // positive test case
     @Test
-    public void whenValidBook_thenUpdateBook() {
+    public void whenValidBook_thenUpdateBook13() {
 
         // arrange
         BookRequestModel bookRequestModel = new BookRequestModel(1234567890123L, "New Book",
@@ -537,7 +619,40 @@ class CatalogBooksControllerIntegrationTest {
 
         // act & assert
         webTestClient.put()
-                .uri(BASE_URI_CATALOG + "/" + FOUND_CATALOG_ID + "/books/" + FOUND_BOOK_ISBN)
+                .uri(BASE_URI_CATALOG + "/" + FOUND_CATALOG_ID + "/books/" + FOUND_BOOK_ISBN13)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .bodyValue(bookRequestModel)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(MediaType.APPLICATION_JSON)
+                .expectBody(BookResponseModel.class)
+                .value((bookResponseModel) -> {
+                    assertNotNull(bookResponseModel);
+                    assertEquals(bookRequestModel.getTitle(), bookResponseModel.getTitle());
+                    assertEquals(bookRequestModel.getCollection(), bookResponseModel.getCollection());
+                    assertEquals(bookRequestModel.getEdition(), bookResponseModel.getEdition());
+                    assertEquals(bookRequestModel.getPublisher(), bookResponseModel.getPublisher());
+                    assertEquals(bookRequestModel.getSynopsis(), bookResponseModel.getSynopsis());
+                    assertEquals(bookRequestModel.getLanguage(), bookResponseModel.getLanguage());
+                    assertEquals(bookRequestModel.getStatus(), bookResponseModel.getStatus().toString());
+                    assertEquals(bookRequestModel.getAuthor().getFirstName(), bookResponseModel.getAuthor().getFirstName());
+                    assertEquals(bookRequestModel.getAuthor().getLastName(), bookResponseModel.getAuthor().getLastName());
+                });
+    }
+
+    // positive test case
+    @Test
+    public void whenValidBook_thenUpdateBook10() {
+
+        // arrange
+        BookRequestModel bookRequestModel = new BookRequestModel(1234567890L, "New Book",
+                "The magnum opus trilogy", "1st edition", "Neji Publications",
+                "Val Chase's magnum opus", "English", "AVAILABLE", new Author("Val", "Chase"));
+
+        // act & assert
+        webTestClient.put()
+                .uri(BASE_URI_CATALOG + "/" + FOUND_CATALOG_ID + "/books/" + FOUND_BOOK_ISBN10)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(bookRequestModel)
@@ -570,7 +685,7 @@ class CatalogBooksControllerIntegrationTest {
 
         // act & assert
         webTestClient.put()
-                .uri(BASE_URI_CATALOG + "/" + NOT_FOUND_CATALOG_ID + "/books/" + FOUND_BOOK_ISBN)
+                .uri(BASE_URI_CATALOG + "/" + NOT_FOUND_CATALOG_ID + "/books/" + FOUND_BOOK_ISBN13)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .bodyValue(bookRequestModel)
@@ -580,6 +695,28 @@ class CatalogBooksControllerIntegrationTest {
                 .jsonPath("$.httpStatus").isEqualTo("NOT_FOUND")
                 .jsonPath("$.message").isEqualTo("Unknown catalogId provided: "
                         + NOT_FOUND_CATALOG_ID);
+    }
+
+    // negative test case
+    @Test
+    public void whenValidBookForDifferentCatalogPUT_thenThrowException() {
+
+        // arrange
+        BookRequestModel bookRequestModel = new BookRequestModel(1234567890123L, "New Book",
+                "The magnum opus trilogy", "1st edition", "Neji Publications",
+                "Val Chase's magnum opus", "English", "AVAILABLE", new Author("Val", "Chase"));
+
+        // act & assert
+        webTestClient.put()
+                .uri(BASE_URI_CATALOG + "/" + OTHER_CATALOG_ID + "/books/" + FOUND_BOOK_ISBN13)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .bodyValue(bookRequestModel)
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody()
+                .jsonPath("$.httpStatus").isEqualTo("NOT_FOUND")
+                .jsonPath("$.message").isEqualTo("Book is not in the catalog.");
     }
 
     // negative test case
@@ -631,109 +768,31 @@ class CatalogBooksControllerIntegrationTest {
 
     // positive test case
     @Test
-    public void whenValidBook_thenPatchBook() {
-
-        // arrange
-        BookRequestModel bookRequestModel = new BookRequestModel(null, null,
-                null, null, null,
-                null, null, "BORROWED", null);
-
-        // act & assert
-        webTestClient.put()
-                .uri(BASE_URI_CATALOG + "/" + FOUND_CATALOG_ID + "/books/" + FOUND_BOOK_ISBN)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .bodyValue(bookRequestModel)
-                .exchange()
-                .expectStatus().isOk()
-                .expectHeader().contentType(MediaType.APPLICATION_JSON)
-                .expectBody(BookResponseModel.class)
-                .value((bookResponseModel) -> {
-                    assertNotNull(bookResponseModel);
-                    assertEquals(bookRequestModel.getStatus(), bookResponseModel.getStatus().toString());
-                });
-    }
-
-    // negative test case
-    @Test
-    public void whenValidBookForUnknownCatalogPATCH_thenThrowException() {
-
-        // arrange
-        BookRequestModel bookRequestModel = new BookRequestModel(null, null,
-                null, null, null,
-                null, null, "BORROWED", null);
-
-        // act & assert
-        webTestClient.patch()
-                .uri(BASE_URI_CATALOG + "/" + NOT_FOUND_CATALOG_ID + "/books/" + FOUND_BOOK_ISBN)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .bodyValue(bookRequestModel)
-                .exchange()
-                .expectStatus().isNotFound()
-                .expectBody()
-                .jsonPath("$.httpStatus").isEqualTo("NOT_FOUND")
-                .jsonPath("$.message").isEqualTo("Unknown catalogId provided: "
-                        + NOT_FOUND_CATALOG_ID);
-    }
-
-    // negative test case
-    @Test
-    public void whenUnknownISBNForPatch_thenThrowException() {
-
-        // arrange
-        BookRequestModel bookRequestModel = new BookRequestModel(null, null,
-                null, null, null,
-                null, null, "BORROWED", null);
-
-        // act & assert
-        webTestClient.patch()
-                .uri(BASE_URI_CATALOG + "/" + FOUND_CATALOG_ID + "/books/" + NOT_FOUND_BOOK_ISBN)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .bodyValue(bookRequestModel)
-                .exchange()
-                .expectStatus().is4xxClientError()
-                .expectBody()
-                .jsonPath("$.httpStatus").isEqualTo("NOT_FOUND")
-                .jsonPath("$.message").isEqualTo("Unknown ISBN provided: " + NOT_FOUND_BOOK_ISBN);
-    }
-
-    // negative test case
-    @Test
-    public void whenInvalidISBNForPatch_thenThrowException() {
-
-        // arrange
-        long sizeDB = bookRepository.count();
-        BookRequestModel bookRequestModel = new BookRequestModel(null, null,
-                null, null, null,
-                null, null, "BORROWED", null);
-
-        webTestClient.patch()
-                .uri(BASE_URI_CATALOG + "/" + FOUND_CATALOG_ID + "/books/" + INVALID_BOOK_ISBN)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .bodyValue(bookRequestModel)
-                .exchange()
-                .expectStatus().is4xxClientError()
-                .expectBody()
-                .jsonPath("$.httpStatus").isEqualTo("UNPROCESSABLE_ENTITY")
-                .jsonPath("$.message").isEqualTo("ISBN must be 10 or 13 digits long.");
-
-        // assert
-        assertEquals(sizeDB, bookRepository.count());
-    }
-
-    // positive test case
-    @Test
-    public void whenValidBook_thenDeleteBook() {
+    public void whenValidBook_thenDeleteBook13() {
 
         // arrange
         long sizeDB = bookRepository.count();
 
         // act & assert
         webTestClient.delete()
-                .uri(BASE_URI_CATALOG + "/" + FOUND_CATALOG_ID + "/books/" + FOUND_BOOK_ISBN)
+                .uri(BASE_URI_CATALOG + "/" + FOUND_CATALOG_ID + "/books/" + FOUND_BOOK_ISBN13)
+                .exchange()
+                .expectStatus().isNoContent();
+
+        // assert
+        assertEquals(sizeDB - 1, bookRepository.count());
+    }
+
+    // positive test case
+    @Test
+    public void whenValidBook_thenDeleteBook10() {
+
+        // arrange
+        long sizeDB = bookRepository.count();
+
+        // act & assert
+        webTestClient.delete()
+                .uri(BASE_URI_CATALOG + "/" + FOUND_CATALOG_ID + "/books/" + FOUND_BOOK_ISBN10)
                 .exchange()
                 .expectStatus().isNoContent();
 
@@ -750,13 +809,33 @@ class CatalogBooksControllerIntegrationTest {
 
         // act & assert
         webTestClient.delete()
-                .uri(BASE_URI_CATALOG + "/" + NOT_FOUND_CATALOG_ID + "/books/" + FOUND_BOOK_ISBN)
+                .uri(BASE_URI_CATALOG + "/" + NOT_FOUND_CATALOG_ID + "/books/" + FOUND_BOOK_ISBN13)
                 .exchange()
                 .expectStatus().isNotFound()
                 .expectBody()
                 .jsonPath("$.httpStatus").isEqualTo("NOT_FOUND")
                 .jsonPath("$.message").isEqualTo("Unknown catalogId provided: "
                         + NOT_FOUND_CATALOG_ID);
+
+        // assert
+        assertEquals(sizeDB, bookRepository.count());
+    }
+
+    // negative test case
+    @Test
+    public void whenValidBookForDifferentCatalogDELETE_thenThrowException() {
+
+        // arrange
+        long sizeDB = bookRepository.count();
+
+        // act & assert
+        webTestClient.delete()
+                .uri(BASE_URI_CATALOG + "/" + OTHER_CATALOG_ID + "/books/" + FOUND_BOOK_ISBN13)
+                .exchange()
+                .expectStatus().isNotFound()
+                .expectBody()
+                .jsonPath("$.httpStatus").isEqualTo("NOT_FOUND")
+                .jsonPath("$.message").isEqualTo("Book is not in the catalog.");
 
         // assert
         assertEquals(sizeDB, bookRepository.count());

@@ -23,6 +23,14 @@ public class BookServiceImpl implements BookService{
 
     @Override
     public BookResponseModel getBook(Long isbn) {
+        if (isbn.toString().length() != 10 && isbn.toString().length() != 13) {
+            throw new InvalidISBNException("ISBN must be 10 or 13 digits long.");
+        }
+
+        Book existingBook = bookRepository.findByIsbn_Isbn(isbn);
+        if (existingBook == null) {
+            throw new NotFoundException("Unknown ISBN provided: " + isbn);
+        }
         return bookResponseMapper.entityToResponseModel(bookRepository.findByIsbn_Isbn(isbn));
     }
 

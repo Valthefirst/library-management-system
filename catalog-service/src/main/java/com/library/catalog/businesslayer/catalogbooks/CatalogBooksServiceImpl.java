@@ -81,7 +81,7 @@ public class CatalogBooksServiceImpl implements CatalogBooksService {
             throw new NotFoundException("Unknown catalogId provided: " + catalogId);
 
         if (existingCatalog.getSize() > 0)
-            throw new InUseException("Catalog has books and cannot be deleted");
+            throw new InUseException("Catalog has books and cannot be deleted.");
 
         catalogRepository.delete(existingCatalog);
     }
@@ -115,7 +115,7 @@ public class CatalogBooksServiceImpl implements CatalogBooksService {
 
         book = bookRepository.findByCatalogIdentifier_CatalogIdAndIsbn_Isbn(catalogId, isbn);
         if (book == null) {
-            throw new NotFoundException("Book is not in the catalog");
+            throw new NotFoundException("Book is not in the catalog.");
         }
 
         return bookResponseMapper.entityToResponseModel(book);
@@ -141,11 +141,8 @@ public class CatalogBooksServiceImpl implements CatalogBooksService {
             return bookResponseMapper.entityToResponseModel(bookRepository.save(book));
         }
         catch (DataAccessException e) {
-            if(e.getMessage().contains("constraint [")) {
-                catalog.setSize(catalog.getSize() - 1);
-                throw new DuplicateISBNException("The catalog already contains a book with isbn: " + bookRequestModel.getIsbn());
-            }
-            throw new InvalidISBNException("Could not save the new book.");
+            catalog.setSize(catalog.getSize() - 1);
+            throw new DuplicateISBNException("The catalog already contains a book with isbn: " + bookRequestModel.getIsbn());
         }
     }
 
@@ -165,7 +162,7 @@ public class CatalogBooksServiceImpl implements CatalogBooksService {
 
         existingBook = bookRepository.findByCatalogIdentifier_CatalogIdAndIsbn_Isbn(catalogId, isbn);
         if (existingBook == null) {
-            throw new NotFoundException("Book is not in the catalog");
+            throw new NotFoundException("Book is not in the catalog.");
         }
 
         Book updatedBook = bookRequestMapper.requestModelToEntity(bookRequestModel, existingBook.getIsbn(),
@@ -192,7 +189,7 @@ public class CatalogBooksServiceImpl implements CatalogBooksService {
 
         existingBook = bookRepository.findByCatalogIdentifier_CatalogIdAndIsbn_Isbn(catalogId, isbn);
         if (existingBook == null) {
-            throw new NotFoundException("Book is not in the catalog");
+            throw new NotFoundException("Book is not in the catalog.");
         }
 
         // To decrement the number of books in the catalogue

@@ -145,7 +145,7 @@ class FineControllerIntegrationTest {
     public void whenInvalidFine_thenThrowException() {
 
         // arrange
-        FineRequestModel fineRequestModel = new FineRequestModel(new BigDecimal("0.00"), "Late return", false);
+        FineRequestModel fineRequestModel = new FineRequestModel(new BigDecimal("-0.01"), "Late return", false);
 
         // act & assert
         webTestClient.post()
@@ -157,7 +157,7 @@ class FineControllerIntegrationTest {
                 .expectStatus().is4xxClientError()
                 .expectBody()
                 .jsonPath("$.httpStatus").isEqualTo("UNPROCESSABLE_ENTITY")
-                .jsonPath("$.message").isEqualTo("The fine must have a value");
+                .jsonPath("$.message").isEqualTo("The fine must have a positive value");
     }
 
     // positive test case
@@ -210,7 +210,7 @@ class FineControllerIntegrationTest {
     public void whenInvalidFineForUpdate_thenThrowException() {
 
         // arrange
-        FineRequestModel fineRequestModel = new FineRequestModel(new BigDecimal("0.00"), "Late return", false);
+        FineRequestModel fineRequestModel = new FineRequestModel(new BigDecimal("-0.01"), "Late return", false);
 
         // act & assert
         webTestClient.put()
@@ -222,7 +222,7 @@ class FineControllerIntegrationTest {
                 .expectStatus().is4xxClientError()
                 .expectBody()
                 .jsonPath("$.httpStatus").isEqualTo("UNPROCESSABLE_ENTITY")
-                .jsonPath("$.message").isEqualTo("The fine must have a value");
+                .jsonPath("$.message").isEqualTo("The fine must have a positive value");
     }
 
     // positive test case
