@@ -28,13 +28,13 @@ public interface BookResponseMapper {
         // all books link
         Link booksLink = linkTo(methodOn(CatalogBooksController.class)
                 .getAllBooks(bookResponseModel.getCatalogId()))
-                .withRel("books in this catalog");
+                .withRel("All the books in this catalog");
         bookResponseModel.add(booksLink);
 
         //get catalogue by id
         Link catalogueId = linkTo(methodOn(CatalogBooksController.class)
                 .getCatalog(bookResponseModel.getCatalogId()))
-                .withRel("catalog");
+                .withRel("Catalog");
         bookResponseModel.add(catalogueId);
     }
 }

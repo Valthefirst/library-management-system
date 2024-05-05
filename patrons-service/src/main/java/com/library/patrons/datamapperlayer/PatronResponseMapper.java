@@ -19,19 +19,4 @@ public interface PatronResponseMapper {
     PatronResponseModel entityToResponseModel(Patron patron);
 
     List<PatronResponseModel> entityListToResponseModelList(List<Patron> patrons);
-
-//    @AfterMapping
-//    default void addLinks(@MappingTarget PatronResponseModel model, Patron patron) {
-//        //self link
-//        Link selfLink = linkTo(methodOn(PatronController.class)
-//                .getPatron(model.getPatronId()))
-//                .withSelfRel();
-//        model.add(selfLink);
-//
-//        // all patrons link
-//        Link patronsLink = linkTo(methodOn(PatronController.class)
-//                .getAllPatrons())
-//                .withRel("patrons");
-//        model.add(patronsLink);
-//    }
 }

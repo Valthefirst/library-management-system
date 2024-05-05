@@ -52,8 +52,8 @@ services:
   loans-service:
     build: loans-service
     hostname: loans-service
-    ports:
-      - "8084:8080"
+#    ports:
+#      - "8084:8080"
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
@@ -188,6 +188,8 @@ services:
       - ME_CONFIG_MONGODB_SERVER=mongodb
       - ME_CONFIG_MONGODB_ADMINUSERNAME=user
       - ME_CONFIG_MONGODB_ADMINPASSWORD=pwd
+    depends_on:
+      - mongodb
 
 volumes:
   mongo: {}

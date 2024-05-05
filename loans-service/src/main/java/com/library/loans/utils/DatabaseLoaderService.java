@@ -64,9 +64,7 @@ public class DatabaseLoaderService implements CommandLineRunner {
 
         var fineModel = FineModel.builder()
                 .fineId("ef23ab6e-d614-47b9-95d0-d66167ae5080")
-                .amount(new BigDecimal("0.50"))
-                .reason("Late return")
-                .isPaid(true)
+                .amount(new BigDecimal("0.00"))
                 .build();
 
         var loan1 = Loan.builder()
@@ -75,8 +73,8 @@ public class DatabaseLoaderService implements CommandLineRunner {
                 .fineModel(fineModel)
                 .books(bookModelList)
                 .status(LoanStatus.ACTIVE)
-                .borrowedDate(LocalDate.now())
-                .dueDate(LocalDate.now().plusDays(21))
+                .borrowedDate(LocalDate.of(2024, 4, 11))
+                .dueDate(LocalDate.of(2024, 5, 2).plusDays(21))
                 .build();
 
         loanRepository.save(loan1);

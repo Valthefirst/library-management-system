@@ -16,19 +16,4 @@ public interface FineResponseMapper {
     FineResponseModel entityToResponseModel(Fine fine);
 
     List<FineResponseModel> entityListToResponseModelList(List<Fine> fines);
-
-//    @AfterMapping
-//    default void addLinks(@MappingTarget FineResponseModel model, Fine fine) {
-//        //self link
-//        Link selfLink = linkTo(methodOn(FineController.class)
-//                .getFine(model.getFineId()))
-//                .withSelfRel();
-//        model.add(selfLink);
-//
-//        // all patrons link
-//        Link finesLink = linkTo(methodOn(FineController.class)
-//                .getAllFines())
-//                .withRel("fines");
-//        model.add(finesLink);
-//    }
 }

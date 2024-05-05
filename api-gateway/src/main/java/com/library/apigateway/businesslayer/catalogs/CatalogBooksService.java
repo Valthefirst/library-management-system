@@ -25,7 +25,5 @@ public interface CatalogBooksService {
 
     BookResponseModel updateBookInCatalog(String catalogId, Long isbn, BookRequestModel bookRequestModel);
 
-//    BookResponseModel patchBookInCatalog(String catalogId, Long isbn, BookRequestModel bookRequestModel);
-
     void deleteBookInCatalog(String catalogId, Long isbn);
 }

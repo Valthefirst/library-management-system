@@ -31,7 +31,7 @@ public interface CatalogResponseMapper {
         //all catalogues
         Link cataloguesLink = linkTo(methodOn(CatalogBooksController.class)
                 .getAllCatalogs())
-                .withRel("catalogs");
+                .withRel("All catalogs");
         catalogResponseModel.add(cataloguesLink);
     }
 }

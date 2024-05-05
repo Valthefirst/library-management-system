@@ -15,25 +15,4 @@ public interface BookResponseMapper {
     BookResponseModel entityToResponseModel(Book book);
 
     List<BookResponseModel> entityListToResponseModelList(List<Book> books);
-
-//    @AfterMapping
-//    default void addLinks(@MappingTarget BookResponseModel model, Book book) {
-//        //self link
-//        Link selfLink = linkTo(methodOn(CatalogBooksController.class)
-//                .getBook(model.getCatalogId(), model.getIsbn()))
-//                .withSelfRel();
-//        model.add(selfLink);
-//
-//        // all books link
-//        Link booksLink = linkTo(methodOn(CatalogBooksController.class)
-//                .getAllBooks(model.getCatalogId()))
-//                .withRel("books in this catalog");
-//        model.add(booksLink);
-//
-//        //get catalogue by id
-//        Link catalogueId = linkTo(methodOn(CatalogBooksController.class)
-//                .getCatalog(model.getCatalogId()))
-//                .withRel("catalog");
-//        model.add(catalogueId);
-//    }
 }

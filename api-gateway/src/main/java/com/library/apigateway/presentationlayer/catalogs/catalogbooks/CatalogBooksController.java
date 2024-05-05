@@ -74,13 +74,6 @@ public class CatalogBooksController {
         return ResponseEntity.ok().body(updatedMovie);
     }
 
-//    @PatchMapping(consumes = "application/json", value = "{catalogId}/books/{isbn}", produces = "application/json")
-//    public ResponseEntity<BookResponseModel> patchBook(@RequestBody BookRequestModel bookRequestModel,
-//                                                        @PathVariable Long isbn, @PathVariable String catalogId) {
-//        BookResponseModel updatedMovie = catalogBooksService.patchBookInCatalog(catalogId, isbn, bookRequestModel);
-//        return ResponseEntity.ok().body(updatedMovie);
-//    }
-
     @DeleteMapping("{catalogId}/books/{isbn}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long isbn, @PathVariable String catalogId) {
         catalogBooksService.deleteBookInCatalog(catalogId, isbn);
