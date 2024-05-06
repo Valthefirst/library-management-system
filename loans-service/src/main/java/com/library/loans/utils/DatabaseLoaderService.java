@@ -25,8 +25,8 @@ public class DatabaseLoaderService implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
 
-        //first purchase order
-        var loanIdentifier1 = new LoanIdentifier();
+        //first loan order
+        var loanIdentifier1 = new LoanIdentifier("s846a5a7-2e1c-4c79-809c-4f3f471e826d");
 
         var bookModel1 = BookModel.builder()
                 .isbn(9789390183522L)

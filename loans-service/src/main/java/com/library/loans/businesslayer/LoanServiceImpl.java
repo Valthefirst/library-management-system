@@ -62,10 +62,6 @@ public class LoanServiceImpl implements LoanService{
         if (loan == null) {
             throw new NotFoundException("Invalid loanId: " + loanId);
         }
-
-        if (loan.getFineModel().getFineId() == null) {
-            loan.getFineModel().setFineId(null);
-        }
         return loanResponseMapper.entityToResponseModel(
                 loanRepository.findLoanByLoanIdentifier_LoanId(loanId));
     }
