@@ -76,26 +76,26 @@ function setupTestdata() {
 #
 body=\
 '{
-  "firstName":"Christine",
-  "lastName":"Gerard",
-  "emailAddress":"christine@gmail.com",
-  "contactMethodPreference": "EMAIL",
-  "streetAddress": "99 Main Street",
-  "city":"Montreal",
-  "province": "Quebec",
-  "country": "Canada",
-  "postalCode": "H3A 1A1",
-  "phoneNumbers": [
-    {
-      "type": "HOME",
-      "number": "514-555-5555"
-    },
-    {
-      "type": "WORK",
-      "number": "514-555-5556"
-    }
-  ]
-}'
+     "firstName": "Cruella",
+     "lastName": "Vil",
+     "emailAddress": "vchawner0@phoca.cz",
+     "contactMethodPreference": "EMAIL",
+     "streetAddress": "2115 rue Notre-Dame",
+     "city": "Montreal",
+     "province": "Québec",
+     "country": "Canada",
+     "postalCode": "J3L 5Y6",
+     "phoneNumbers": [
+         {
+             "type": "HOME",
+             "number": "515-555-5555"
+         },
+         {
+             "type": "MOBILE",
+             "number": "514-555-4444"
+         }
+     ]
+ }'
     recreatePatron 1 "$body"
 #
 
@@ -110,7 +110,7 @@ body=\
      ]
  }
 '
-    recreatePatronLoan 1 "$body" "cc9c2c7f-afc9-46fb-8119-17158e54d02f"
+    recreatePatronLoan 1 "$body" "45772446-62f4-4ccb-b3f4-9393c186fa43"
 
 } #end of setupTestdata
 
@@ -121,7 +121,7 @@ function recreatePatron() {
     local aggregate=$2
 
     #create the patron and record the generated patronId
-    patronId=$(curl -X POST http://localhost:8080/api/v1/patrons -H "Content-Type:
+    patronId=$(curl -X POST http://$HOST:$PORT/api/v1/patrons -H "Content-Type:
     application/json" --data "$aggregate" | jq '.patronId')
     allTestPatronIds[$testId]=$patronId
     echo "Added Patron with patronId: ${allTestPatronIds[$testId]}"
@@ -137,7 +137,7 @@ function recreatePatronLoan() {
     #create the loan and record the generated loanId
     loanId=$(curl -X POST http://$HOST:$PORT/api/v1/patrons/$patronId/loans -H "Content-Type:
     application/json" --data "$aggregate" | jq '.loanId')
-    allTestLoanIds[$testId]=loanId
+    allTestLoanIds[$testId]=$loanId
     echo "Added Customer with loanId: ${allTestLoanIds[$testId]}"
 }
 

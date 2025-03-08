@@ -61,9 +61,14 @@ public class PatronServiceClient {
 
     public PatronResponseModel postPatron(PatronRequestModel patronRequestModel) {
         try {
-            return restTemplate.postForObject(PATRON_SERVICE_BASE_URL, patronRequestModel, PatronResponseModel.class);
+            log.debug("Sending a POST request to the Patron Service, using: " + PATRON_SERVICE_BASE_URL);
+
+            PatronResponseModel model = restTemplate.postForObject(PATRON_SERVICE_BASE_URL, patronRequestModel, PatronResponseModel.class);
+            log.debug("Received a response from the Patron Service: " + model.toString());
+            return model;
         }
         catch (HttpClientErrorException ex) {
+            log.debug("Caught an HttpClientErrorException POST Patron: {}", ex.getMessage());
             throw handleHttpClientException(ex);
         }
     }

@@ -57,8 +57,8 @@ class LoanServiceUnitTest {
 
     @SpyBean
     LoanResponseMapper loanResponseMapper;
+
     private final String NOT_FOUND_PATRON_ID = "e5913a79-9b1e-4516-9ffd-06578e7af260";
-    private final String NOT_FOUND_LOAN_ID = "d846a5a7-2e1c-4c79-809c-4f3f471e826c";
 
     // positive path
     @Test

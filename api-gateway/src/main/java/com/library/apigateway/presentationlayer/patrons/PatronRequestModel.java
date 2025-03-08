@@ -2,12 +2,14 @@ package com.library.apigateway.presentationlayer.patrons;
 
 import com.library.apigateway.domainclientlayer.patrons.PhoneNumber;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class PatronRequestModel {

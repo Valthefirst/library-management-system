@@ -10,6 +10,7 @@ import com.library.patrons.presentationlayer.PatronRequestModel;
 import com.library.patrons.presentationlayer.PatronResponseModel;
 import com.library.patrons.utils.exceptions.InvalidEmailException;
 import com.library.patrons.utils.exceptions.NotFoundException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
+@Slf4j
 public class PatronServiceImpl implements PatronService{
 
     private final PatronRepository patronRepository;
@@ -57,7 +59,9 @@ public class PatronServiceImpl implements PatronService{
                 patronRequestModel.getProvince(), patronRequestModel.getCountry(), patronRequestModel.getPostalCode());
 
         Patron patron = patronRequestMapper.requestModelToEntity(patronRequestModel, new PatronIdentifier(), address);
+        log.debug("saved patron to db: " + patron.toString());
         patron.setAddress(address);
+        log.debug("Adding patron:" + patronRequestModel.getFirstName());
         return patronResponseMapper.entityToResponseModel(patronRepository.save(patron));
     }
 

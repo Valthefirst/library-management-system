@@ -1,6 +1,7 @@
 package com.library.apigateway.presentationlayer.patrons;
 
 import com.library.apigateway.businesslayer.patrons.PatronService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/patrons")
+@Slf4j
 public class PatronController {
 
     private final PatronService patronService;
@@ -29,6 +31,7 @@ public class PatronController {
 
     @PostMapping(consumes = "application/json", produces = "application/json")
     public ResponseEntity<PatronResponseModel> addPatron(@RequestBody PatronRequestModel patronRequestModel) {
+        log.debug("Received request to add patron: {}", patronRequestModel);
         return ResponseEntity.status(HttpStatus.CREATED).body(patronService.addPatron(patronRequestModel));
     }
 
